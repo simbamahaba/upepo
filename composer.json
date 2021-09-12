@@ -1,0 +1,48 @@
+{
+    "name": "simbamahaba/upepo",
+    "description": "Admin pack for laravel",
+    "type": "project",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^7.3|^8.0",
+        "barryvdh/laravel-dompdf": "^0.9.0",
+        "bumbummen99/shoppingcart": "^4.0",
+        "intervention/imagecache": "^2.5",
+        "laravel/socialite": "^5.2",
+        "spatie/laravel-responsecache": "^6.6",
+        "unisharp/laravel-filemanager": "^2.2",
+        "watson/sitemap": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Simbamahaba\\Upepo\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Barryvdh\\DomPDF\\ServiceProvider",
+                "UniSharp\\LaravelFilemanager\\LaravelFilemanagerServiceProvider",
+                "Intervention\\Image\\ImageServiceProvider",
+                "Gloudemans\\Shoppingcart\\ShoppingcartServiceProvider",
+                "Simbamahaba\\Upepo\\UpepoServiceProvider",
+                "Simbamahaba\\Upepo\\Providers\\ShopServiceProvider",
+                "Simbamahaba\\Upepo\\Providers\\PicturesServiceProvider",
+                "Simbamahaba\\Upepo\\Providers\\ComposerServiceProvider",
+                "Laravel\\Socialite\\SocialiteServiceProvider",
+                "Spatie\\ResponseCache\\ResponseCacheServiceProvider",
+                "Watson\\Sitemap\\SitemapServiceProvider"
+                
+            ],
+            "aliases": {
+                "Image": "Intervention\\Image\\Facades\\Image",
+                "Cart": "Gloudemans\\Shoppingcart\\Facades\\Cart",
+                "Socialite": "Laravel\\Socialite\\Facades\\Socialite",
+                "PDF": "Barryvdh\\DomPDF\\Facade",
+                "Sitemap": "Watson\\Sitemap\\Facades\\Sitemap"
+            }
+        }
+    }
+}

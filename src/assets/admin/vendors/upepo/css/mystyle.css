@@ -1,0 +1,50 @@
+.vizibil {
+    color: #b0131e;
+    font-size: 1.4em;
+}
+.ascuns{
+    color: #26B99A;
+    font-size: 1.4em;
+}
+.panelIcon{
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+    margin:auto;
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+.site_title i{
+    border:none;
+    border-radius: 0;
+}
+.panelIcon.home{
+    background-image: url('../../../images/house.png');
+    width: 32px;
+    height: 32px;
+    background-size: initial;
+    display: inline-block;
+    position:relative;
+    top:6px;
+}
+a.panelIcon.addImage{ background-image: url('../../../images/image.png'); }
+a.panelIcon.deleteItem{ background-image: url('../../../images/delete.png'); }
+a.panelIcon.deleteRedItem{ background-image: url('../../../images/delete_red.png'); }
+a.panelIcon.invoice{ background-image: url('../../../images/clipboard_invoice.png'); }
+a.panelIcon.editItem{ background-image: url('../../../images/application_edit.png'); }
+a.panelIcon.file{ background-image: url('../../../images/page.png'); }
+a.panelIcon.pdf{ background-image: url('../../../images/file_extension_pdf.png'); }
+.panelIcon.noImage{ background-image: url('../../../images/no_image.png'); }
+.panelIcon.visible{ background-image: url('../../../images/tick.png'); }
+.panelIcon.notVisible{ background-image: url('../../../images/cross.png'); }
+input.numar{ width:30px;}
+input.numarb{ width:50px;}
+.margin-top-34{margin-top: 34px;}
+.textarea-small {max-height: 90px;}
+.col_1, .col_2{
+    float:left;
+    margin-right: 20px;
+}
+#orders tr th:nth-child(1){
+    width:20%;
+}

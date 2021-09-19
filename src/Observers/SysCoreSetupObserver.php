@@ -1,6 +1,6 @@
 <?php
 
-namespace Decoweb\Panelpack\Observers;
+namespace Simbamahaba\Upepo\Observers;
 
 use Illuminate\Support\Facades\App;
 use Simbamahaba\Upepo\Models\SysCoreSetup;

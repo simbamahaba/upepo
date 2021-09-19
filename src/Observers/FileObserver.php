@@ -1,6 +1,6 @@
 <?php
 
-namespace Decoweb\Panelpack\Observers;
+namespace Simbamahaba\Upepo\Observers;
 
 use Simbamahaba\Upepo\Models\File;
 use Illuminate\Support\Facades\Storage;

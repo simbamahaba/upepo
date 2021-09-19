@@ -1,6 +1,6 @@
 <?php
 
-namespace Decoweb\Panelpack\ViewComposers;
+namespace Simbamahaba\Upepo\ViewComposers;
 
 use Illuminate\View\View;
 use Simbamahaba\Upepo\Models\Order;

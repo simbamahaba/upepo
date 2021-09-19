@@ -24,7 +24,7 @@ class ShopServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Decoweb\Panelpack\Helpers\Contracts\ShopContract', function(){
+        $this->app->bind('Simbamahaba\Upepo\Helpers\Contracts\ShopContract', function(){
 //            return new \App\Helpers\Shop(new Category(), new Product());
             return new \Simbamahaba\Upepo\Helpers\Shop(new Category(), new Product());
         });
@@ -33,6 +33,6 @@ class ShopServiceProvider extends ServiceProvider
 
     public function provides()
     {
-        return ['Decoweb\Panelpack\Helpers\Contracts\ShopContract'];
+        return ['Simbamahaba\Upepo\Helpers\Contracts\ShopContract'];
     }
 }

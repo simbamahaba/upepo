@@ -8,9 +8,9 @@ use Simbamahaba\Upepo\Listeners\DeleteRecordFilesNamesListener;
 use Simbamahaba\Upepo\Listeners\DeleteRecordImagesListener;
 use Simbamahaba\Upepo\Listeners\DeleteRecordImagesNamesListener;
 
-use Decoweb\Panelpack\Observers\FileObserver;
-use Decoweb\Panelpack\Observers\ImageObserver;
-use Decoweb\Panelpack\Observers\SysCoreSetupObserver;
+use Simbamahaba\Upepo\Observers\FileObserver;
+use Simbamahaba\Upepo\Observers\ImageObserver;
+use Simbamahaba\Upepo\Observers\SysCoreSetupObserver;
 use Simbamahaba\Upepo\Models\File;
 use Simbamahaba\Upepo\Models\Image;
 use Simbamahaba\Upepo\Models\SysCoreSetup;

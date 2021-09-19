@@ -12,7 +12,7 @@
                 <div class="clearfix"></div>
                 <br>
 
-            @include('vendor.decoweb.admin.layouts.parts.sidebar')
+            @include('vendor.upepo.admin.layouts.parts.sidebar')
 
                 <!-- /menu footer buttons -->
                 <div class="sidebar-footer hidden-small">

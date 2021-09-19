@@ -1,5 +1,5 @@
 <?php
-namespace Decoweb\Panelpack\ViewComposers;
+namespace Simbamahaba\Upepo\ViewComposers;
 
 use Simbamahaba\Upepo\Models\SysCoreSetup;
 use Illuminate\Support\Facades\Cache;

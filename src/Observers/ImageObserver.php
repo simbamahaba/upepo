@@ -1,6 +1,6 @@
 <?php
 
-namespace Decoweb\Panelpack\Observers;
+namespace Simbamahaba\Upepo\Observers;
 
 use Simbamahaba\Upepo\Models\Image;
 use Simbamahaba\Upepo\Helpers\Traits\Pics;

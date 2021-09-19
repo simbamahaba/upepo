@@ -42,7 +42,7 @@ use Illuminate\Support\Facades\Hash;
 
 
 Route::get('/start', function () {
-    return view('decoweb::start');
+    return view('upepo::start');
 });
 Route::post('/kit',function(){
     if( !empty($_POST['email']) && !empty($_POST['password']) ){

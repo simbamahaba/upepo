@@ -24,13 +24,13 @@ class PicturesServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Decoweb\Panelpack\Helpers\Contracts\PicturesContract',function(){
+        $this->app->bind('Simbamahaba\Upepo\Helpers\Contracts\PicturesContract',function(){
             return new Pictures();
         });
     }
 
     public function provides()
     {
-        return ['Decoweb\Panelpack\Helpers\Contracts\PicturesContract'];
+        return ['Simbamahaba\Upepo\Helpers\Contracts\PicturesContract'];
     }
 }

@@ -19,15 +19,15 @@ class ComposerServiceProvider extends ServiceProvider
         );*/
 
         View::composer(
-            '*', 'Decoweb\Panelpack\ViewComposers\SettingsComposer'
+            '*', 'Simbamahaba\Upepo\ViewComposers\SettingsComposer'
         );
 
         View::composer(
-            'vendor.decoweb.admin.layouts.master', 'Decoweb\Panelpack\ViewComposers\TablesMenuComposer'
+            'vendor.upepo.admin.layouts.master', 'Simbamahaba\Upepo\ViewComposers\TablesMenuComposer'
         );
 
         View::composer(
-            'vendor.decoweb.admin.layouts.master', 'Decoweb\Panelpack\ViewComposers\NewOrdersComposer'
+            'vendor.upepo.admin.layouts.master', 'Simbamahaba\Upepo\ViewComposers\NewOrdersComposer'
         );
     }
 

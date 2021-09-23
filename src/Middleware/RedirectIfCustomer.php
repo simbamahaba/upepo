@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Http\Request;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 class RedirectIfCustomer
@@ -9,15 +10,17 @@ class RedirectIfCustomer
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request $request
+     * @param Closure $next
+     * @param string $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = 'customer')
+    public function handle(Request $request, Closure $next, $guard = 'customer')
     {
         if (Auth::guard($guard)->check()) {
-            return redirect()->intended('/customer/profile');
+            return redirect('/customer/profile');
         }
+
         return $next($request);
     }
 }

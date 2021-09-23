@@ -17,7 +17,9 @@ class RedirectIfNotCustomer
     {
 
         if (Auth::guard('customer')->check() != true ) {
-            return redirect('/customer/login/');
+
+            return redirect()->guest( route('customer.showLoginForm') );
+
         }
 
         return $next($request);

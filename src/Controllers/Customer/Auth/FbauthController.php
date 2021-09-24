@@ -1,6 +1,6 @@
 <?php
 
-namespace Simbamahaba\Upepo\Controllers\CustomerAuth;
+namespace Simbamahaba\Upepo\Controllers\Customer\Auth;
 
 use App\Mail\FbUserPassword;
 use Illuminate\Http\Request;

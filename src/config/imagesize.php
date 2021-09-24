@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Handled by Decoweb\Panelpack\Controllers\Admin\ImagesController
+ * Handled by Simbamahaba\Upepo\Controllers\Admin\ImagesController
  *
  * resizeAndStore( $width, $height & $compression )
  *

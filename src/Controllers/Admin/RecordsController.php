@@ -64,7 +64,7 @@ class RecordsController extends Controller
         $config = $settings['config'];
 
 //        $this->qry();
-        return view('upepo::admin.records.indexb',
+        return view('upepo::admin.records.index',
             [
                 'records'       => $this->records->paginateRecords($settings),
                 'id'            => (int)$id,

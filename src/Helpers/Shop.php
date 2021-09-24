@@ -1,5 +1,5 @@
 <?php
-namespace Decoweb\Panelpack\Helpers;
+namespace Simbamahaba\Upepo\Helpers;
 
 use Simbamahaba\Upepo\Helpers\Contracts\ShopContract;
 use \Illuminate\Database\Eloquent\Model;

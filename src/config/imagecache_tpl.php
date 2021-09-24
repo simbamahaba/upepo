@@ -1,4 +1,4 @@
 <?php
 return[
-    'xsmall' => 'Decoweb\Panelpack\Imagecache\Xsmall', #used in panel as icon for records
+    'xsmall' => 'Simbamahaba\Upepo\Imagecache\Xsmall', #used in panel as icon for records
 ];

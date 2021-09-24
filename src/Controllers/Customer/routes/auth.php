@@ -8,6 +8,7 @@ use Simbamahaba\Upepo\Controllers\Customer\Auth\NewPasswordController;
 use Simbamahaba\Upepo\Controllers\Customer\Auth\PasswordResetLinkController;
 use Simbamahaba\Upepo\Controllers\Customer\Auth\RegisteredUserController;
 use Simbamahaba\Upepo\Controllers\Customer\Auth\VerifyEmailController;
+use Simbamahaba\Upepo\Controllers\Customer\Auth\FbauthController;
 use Illuminate\Support\Facades\Route;
 
 # Register customers
@@ -82,3 +83,6 @@ Route::post('customer/confirm-password', [ConfirmablePasswordController::class, 
 Route::post('customer/logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->middleware(['web','loggedcustomer'])
                 ->name('customer.logout');
+# Facebook Auth
+Route::get('auth/facebook', [FbauthController::class, 'redirectToProvider'])->name('fb.redirectToProvider');
+Route::get('auth/facebook/callback', [FbauthController::class, 'handleProviderCallback'])->name('fb.handleProviderCallback');

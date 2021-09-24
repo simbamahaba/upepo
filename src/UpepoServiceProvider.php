@@ -15,7 +15,11 @@ class UpepoServiceProvider extends ServiceProvider
     {
 
         $this->loadRoutesFrom(__DIR__.'/routes.php');
-        $this->loadRoutesFrom(__DIR__.'/Controllers/Customer/routes/auth.php');
+
+        if( config('shop.active') === true ) {
+            $this->loadRoutesFrom(__DIR__.'/shop_routes.php');
+            $this->loadRoutesFrom(__DIR__ . '/Controllers/Customer/routes/auth.php');
+        }
 
         $this->publishes([
             __DIR__.'/assets' => public_path('/assets'),

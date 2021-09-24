@@ -37,6 +37,6 @@ class ContactUs extends Mailable
         return $this->from($this->system_email)
                     ->replyTo($this->senderEmail)
                     ->subject('Mesaj nou de pe site-ul '.$this->site_name)
-                    ->text('decoweb::emails.contact_plain');
+                    ->text('upepo::emails.contact_plain');
     }
 }

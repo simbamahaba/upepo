@@ -40,6 +40,6 @@ class NewOrderConfirm extends Mailable
     {
         return $this->from($this->system_email, $this->site_name)
                     ->subject('Comanda noua pe site-ul '.$this->site_name)
-                    ->view('decoweb::emails.newOrderConfirm');
+                    ->view('upepo::emails.newOrderConfirm');
     }
 }

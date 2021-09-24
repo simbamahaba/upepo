@@ -27,6 +27,6 @@ class FbUserPassword extends Mailable
     {
         return $this->from($this->system_email,$this->site_name)
                     ->subject('Parola contului creat pe '.$this->site_name)
-                    ->view('decoweb::emails.fbpassword');
+                    ->view('upepo::emails.fbpassword');
     }
 }

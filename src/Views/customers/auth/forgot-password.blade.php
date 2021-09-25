@@ -1,7 +1,7 @@
 @extends('vendor.upepo.layouts.app')
 @section('content')
 <div>
-    {{ __('passwords.forgot') }}
+    {{ __('upepo::passwords.forgot') }}
 </div>
 
 @if(session('status'))

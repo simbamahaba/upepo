@@ -1,58 +1,33 @@
 @extends('vendor.upepo.layouts.app')
-
 @section('content')
-    <div class="panel panel-default">
-        <div class="panel-heading"><h1>Intra in cont</h1></div>
-        <div class="panel-body">
-                <form class="form-horizontal" role="form" method="POST" action="{{ url('customer/login') }}">
-                    {{ csrf_field() }}
+    @php
+        $divClass = 'pure-control-group';
+        $errorMsg = 'pure-form-message-inline';
+    @endphp
+<h2>{{ __('upepo::auth.signin') }}</h2>
 
-                    <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                        <label for="email" class="col-md-4 control-label">E-Mail Address</label>
-
-                        <div class="col-md-6">
-                            <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
-
-                            @if ($errors->has('email'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('email') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                        <label for="password" class="col-md-4 control-label">Password</label>
-
-                        <div class="col-md-6">
-                            <input id="password" type="password" class="form-control" name="password" required>
-
-                            @if ($errors->has('password'))
-                                <span class="help-block">
-                        <strong>{{ $errors->first('password') }}</strong>
-                    </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-6 col-md-offset-4">
-                        {{--<input class="btn btn-primary" type="submit" value="Log in">--}}
-                        <button class="btn btn-primary" type="submit" value="submit">Log in</button>
-                        <a class="btn btn-default" href="{{ route('password.request') }}">Ati uitat parola?</a>
-                        <a class="btn btn-default" href="{{ route('customer.showRegistrationForm') }}">Cont nou</a>
-                            <hr>
-                            @if ($errors->has('fberror'))
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <strong>{!! $errors->first('fberror') !!}</strong>
-                                    </div>
-                                </div>
-                            @endif
-                        <a class="btn btn-primary btn-large" href="{{ url('auth/facebook') }}"><i class="fa fa-facebook left"></i> Facebook Login</a>
-                        </div>
-                    </div>
-
-                </form>
+<form method="POST" action="{{ url('customer/login') }}"  class="pure-form pure-form-aligned" role="form" >
+    @csrf
+    <fieldset>
+        <div class="{{ $divClass }}">
+            <label for="email"> Email</label>
+            <input id="email" type="text" name="email" value="{{ old('email') }}" required>
+            <x-upepo::inputs.error-input :field="'email'"/>
         </div>
-    </div>
+
+        <div class="{{ $divClass }}">
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" required>
+            <x-upepo::inputs.error-input :field="'password'"/>
+        </div>
+        <div class="pure-controls">
+            <button class="pure-button pure-button-primary" type="submit" value="submit">Log in</button>
+        </div>
+    </fieldset>
+</form>
+<a class="pure-button" href="{{ route('password.request') }}">{{ __('upepo::passwords.forgotask') }}</a>
+<a class="pure-button" href="{{ route('customer.showRegistrationForm') }}">Cont nou</a>
+<hr>
+<a class="pure-button pure-button-primary" href="{{ url('auth/facebook') }}">Facebook Login</a>
+<x-upepo::inputs.error-input :field="'fberror'"/>
 @endsection

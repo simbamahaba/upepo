@@ -1,153 +1,117 @@
 @extends('vendor.upepo.layouts.app')
-@section('header-assets')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-@endsection
 @section('content')
+    @php
+        $divClass = 'pure-control-group';
+        $errorMsg = 'pure-form-message-inline';
+    @endphp
     @if(session()->has('mesaj'))
-        <br>
-        <br>
-        <div class="alert alert-success text-center" role="alert">
+        <div role="alert">
             {{ session()->get('mesaj') }}
         </div>
     @endif
-<div class="panel panel-default">
-    <div class="panel-heading"><h1>Cont nou</h1></div>
-    <div class="panel-body">
-<form class="form-horizontal" role="form" method="POST" action="{{ url('customer/register') }}">
-            @csrf
-            @method('POST')
 
-            <h3>Date autentificare</h3>
-            <hr>
-            <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                <label for="email" class="col-md-4 control-label">E-Mail Address</label>
-                <div class="col-md-6">
-                    <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
-                    @if ($errors->has('email')) <span class="help-block"><strong>{{ $errors->first('email') }}</strong></span> @endif
-                </div>
-            </div>
+    <h2>Cont nou</h2>
 
-            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                <label for="password" class="col-md-4 control-label">Password</label>
-                <div class="col-md-6">
-                    <input id="password" type="password" class="form-control" name="password" required>
-                    @if ($errors->has('password')) <span class="help-block"><strong>{{ $errors->first('password') }}</strong></span> @endif
-                </div>
-            </div>
+    <form method="POST" action="{{ route('customer.register') }}" class="pure-form pure-form-aligned" role="form" >
+        @csrf @method('POST')
 
-            <div class="form-group">
-                <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
-                <div class="col-md-6">
-                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-                </div>
-            </div>
+        <h3>Date autentificare</h3>
+        <hr>
+        <div class="{{ $divClass }}">
+            <label for="email">Email *</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}" required>
+            <x-upepo::inputs.error-input :field="'email'"/>
+        </div>
+        <div class="{{ $divClass }}">
+            <label for="password">Password *</label>
+            <input id="password" type="password" name="password" required>
+            <x-upepo::inputs.error-input :field="'password'"/>
+        </div>
+        <div class="{{ $divClass }}">
+            <label for="password-confirm">Confirm Password *</label>
+            <input id="password-confirm" type="password" name="password_confirmation" required>
+        </div>
 
-            <h3>Tip cont</h3>
-            <hr>
-            <div class="form-group">
-                <label for="account_type" class="col-sm-2 control-label">Tip cont :</label>
-                <div class="col-sm-5">
-                    <select name="account_type" id="account_type" class="form-control">
-                        <option value="0">Persoana fizica</option>
-                        <option value="1">Persoana juridica</option>
-                    </select>
-                    @if ($errors->has('account_type')) <span class="help-block"><strong>{{ $errors->first('account_type') }}</strong></span> @endif
-                </div>
+        <h3>Tip cont</h3>
+        <hr>
+        <div class="{{ $divClass }}">
+            <label for="account_type">Tip cont *</label>
+            <select name="account_type" id="account_type" required>
+                <option value="0">Persoana fizica</option>
+                <option value="1">Persoana juridica</option>
+            </select>
+            <x-upepo::inputs.error-input :field="'account_type'"/>
+        </div>
+        <h3>Date personale</h3>
+        <hr>
+        {{--PERSOANA FIZICA--}}
+        <div id="pers_fizica" @if(old('account_type') == 1) style="display:none;" @endif>
+            <div class="{{ $divClass }}">
+                <label for="name">Nume *</label>
+                <input type="text" name="name" id="name" placeholder="(doar litere, spatii si cratima)" value="{{ old('name') }}">
+                <x-upepo::inputs.error-input :field="'name'"/>
             </div>
-            <h3>Date personale</h3>
-            <hr>
-{{--PERSOANA FIZICA--}}
-    <div id="pers_fizica" @if(old('account_type') == 1) style="display:none;" @endif>
-                <div class="form-group">
-                    <label for="name" class="col-sm-2 control-label">Nume :</label>
-                    <div class="col-sm-5">
-                        <input type="text" name="name" id="name" class="form-control" placeholder="(doar litere, spatii si cratima)" value="{{ old('name') }}">
-                        @if ($errors->has('name')) <span class="help-block"><strong>{{ $errors->first('name') }}</strong></span> @endif
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="phone" class="col-sm-2 control-label">Telefon :</label>
-                    <div class="col-sm-5">
-                        <input type="text" name="phone" id="phone" class="form-control" placeholder="(doar cifre)" value="{{ old('phone') }}">
-                        @if ($errors->has('phone')) <span class="help-block"><strong>{{ $errors->first('phone') }}</strong></span> @endif
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="cnp" class="col-sm-2 control-label">CNP :</label>
-                    <div class="col-sm-5">
-                        <input type="text" name="cnp" id="cnp" class="form-control" placeholder="(doar cifre)" value="{{ old('cnp') }}">
-                        @if ($errors->has('cnp')) <span class="help-block"><strong>{{ $errors->first('cnp') }}</strong></span> @endif
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="region" class="col-sm-2 control-label">Judet :</label>
-                    <div class="col-sm-5">
-                        <input type="text" name="region" id="region" class="form-control" placeholder="(doar litere, spatii si cratima)" value="{{ old('region') }}">
-                        @if ($errors->has('region')) <span class="help-block"><strong>{{ $errors->first('region') }}</strong></span> @endif
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="city" class="col-sm-2 control-label">Oras :</label>
-                    <div class="col-sm-5">
-                        <input type="text" name="city" id="city" class="form-control" placeholder="(doar litere, spatii si cratima)" value="{{ old('city') }}">
-                        @if ($errors->has('city')) <span class="help-block"><strong>{{ $errors->first('city') }}</strong></span> @endif
-                    </div>
-                </div>
-    </div>
-{{--PERSOANA JURIDICA--}}
-            <div id="pers_juridica" @if(old('account_type') == 0) style="display:none;" @endif>
-                <div class="form-group">
-                    <label for="company" class="col-sm-2 control-label">Companie :</label>
-                    <div class="col-sm-5">
-                        <input type="text" name="company" id="company" class="form-control" placeholder="(doar litere, cifre, spatii si cratima)" value="{{ old('company') }}">
-                        @if ($errors->has('company')) <span class="help-block"><strong>{{ $errors->first('company') }}</strong></span> @endif
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="rc" class="col-sm-2 control-label">Nr. Reg. Com. :</label>
-                    <div class="col-sm-5">
-                        <input type="text" name="rc" id="rc" class="form-control" placeholder="(doar litere si cifre)" value="{{ old('rc') }}">
-                        @if ($errors->has('rc')) <span class="help-block"><strong>{{ $errors->first('rc') }}</strong></span> @endif
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="cif" class="col-sm-2 control-label">CIF :</label>
-                    <div class="col-sm-5">
-                        <input type="text" name="cif" id="cif" class="form-control" placeholder="(doar cifre)" value="{{ old('cif') }}">
-                        @if ($errors->has('cif')) <span class="help-block"><strong>{{ $errors->first('cif') }}</strong></span> @endif
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="bank_account" class="col-sm-2 control-label">Cont bancar :</label>
-                    <div class="col-sm-5">
-                        <input type="text" name="bank_account" id="bank_account" class="form-control" placeholder="(doar litere si cifre)" value="{{ old('bank_account') }}">
-                        @if ($errors->has('bank_account')) <span class="help-block"><strong>{{ $errors->first('bank_account') }}</strong></span> @endif
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="bank_name" class="col-sm-2 control-label">Nume banca :</label>
-                    <div class="col-sm-5">
-                        <input type="text" name="bank_name" id="bank_name" class="form-control" placeholder="(doar litere, spatii si cratima)" value="{{ old('bank_name') }}">
-                        @if ($errors->has('bank_name')) <span class="help-block"><strong>{{ $errors->first('bank_name') }}</strong></span> @endif
-                    </div>
-                </div>
+            <div class="{{ $divClass }}">
+                <label for="phone">Telefon *</label>
+                <input type="text" name="phone" id="phone" placeholder="(doar cifre)" value="{{ old('phone') }}">
+                <x-upepo::inputs.error-input :field="'phone'"/>
             </div>
-            <div class="form-group">
-                <label for="address" class="col-sm-2 control-label">Nume banca :</label>
-                <div class="col-sm-5">
-                    <textarea name="address" id="address" cols="50" rows="3" class="form-control" placeholder="(adresa)"></textarea>
-                    @if ($errors->has('address')) <span class="help-block"><strong>{{ $errors->first('address') }}</strong></span> @endif
-                </div>
+            <div class="{{ $divClass }}">
+                <label for="cnp">CNP *</label>
+                <input type="text" name="cnp" id="cnp" placeholder="(doar cifre)" value="{{ old('cnp') }}">
+                <x-upepo::inputs.error-input :field="'cnp'"/>
             </div>
-            <div class="form-group">
-                <div class="col-md-6 col-md-offset-4">
-                    <input type="submit" class="btn btn-primary" value="Creează cont">
-                </div>
+            <div class="{{ $divClass }}">
+                <label for="region">Judet *</label>
+                <input type="text" name="region" id="region" placeholder="(doar litere, spatii si cratima)" value="{{ old('region') }}">
+                <x-upepo::inputs.error-input :field="'region'"/>
             </div>
-</form>
-    </div>
-</div>
+            <div class="{{ $divClass }}">
+                <label for="city">Oras *</label>
+                <input type="text" name="city" id="city" placeholder="(doar litere, spatii si cratima)" value="{{ old('city') }}">
+                <x-upepo::inputs.error-input :field="'city'"/>
+            </div>
+        </div>
+        {{--PERSOANA JURIDICA--}}
+        <div id="pers_juridica" @if(old('account_type') == 0) style="display:none;" @endif>
+            <div class="{{ $divClass }}">
+                <label for="company" >Companie *</label>
+                <input type="text" name="company" id="company" placeholder="(doar litere, cifre, spatii si cratima)" value="{{ old('company') }}">
+                <x-upepo::inputs.error-input :field="'company'"/>
+            </div>
+            <div class="{{ $divClass }}">
+                <label for="rc">Nr. Reg. Com. *</label>
+                <input type="text" name="rc" id="rc" class="form-control" placeholder="(doar litere si cifre)" value="{{ old('rc') }}">
+                <x-upepo::inputs.error-input :field="'rc'"/>
+            </div>
+            <div class="{{ $divClass }}">
+                <label for="cif">CIF *</label>
+                <input type="text" name="cif" id="cif" class="form-control" placeholder="(doar cifre)" value="{{ old('cif') }}">
+                <x-upepo::inputs.error-input :field="'cif'"/>
+            </div>
+            <div class="{{ $divClass }}">
+                <label for="bank_account">Cont bancar *</label>
+                <input type="text" name="bank_account" id="bank_account" class="form-control" placeholder="(doar litere si cifre)" value="{{ old('bank_account') }}">
+                <x-upepo::inputs.error-input :field="'bank_account'"/>
+            </div>
+            <div class="{{ $divClass }}">
+                <label for="bank_name" >Nume banca *</label>
+                <input type="text" name="bank_name" id="bank_name" class="form-control" placeholder="(doar litere, spatii si cratima)" value="{{ old('bank_name') }}">
+                <x-upepo::inputs.error-input :field="'bank_name'"/>
+            </div>
+        </div>
+        <div class="{{ $divClass }}">
+            <label for="address" ">Adresa :</label>
+            <textarea name="address" id="address" cols="50" rows="3" class="form-control" placeholder="(adresa)"></textarea>
+            <x-upepo::inputs.error-input :field="'address'"/>
+        </div>
+        <div class="pure-controls">
+            <input type="submit" class="pure-button pure-button-primary" value="Creează cont">
+        </div>
+
+    </form>
 @endsection
 @section('footer-assets')
-<script src="{{ asset('assets/admin/vendors/upepo/js/account_type.js') }}"></script>
+    <script src="{{ asset('assets/admin/vendors/upepo/js/account_type.js') }}"></script>
 @endsection
+

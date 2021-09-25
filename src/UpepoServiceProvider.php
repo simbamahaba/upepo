@@ -56,6 +56,11 @@ class UpepoServiceProvider extends ServiceProvider
         ]);
 
         $this->loadMigrationsFrom(__DIR__.'/Migrations');
+
+        $this->loadTranslationsFrom(__DIR__.'/lang', 'upepo');
+        $this->publishes([
+            __DIR__.'/lang' => resource_path('lang/vendor/upepo'),
+        ]);
     }
 
     /**

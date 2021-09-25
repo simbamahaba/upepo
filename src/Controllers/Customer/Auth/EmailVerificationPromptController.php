@@ -18,6 +18,6 @@ class EmailVerificationPromptController extends Controller
     {
         return $request->user('customer')->hasVerifiedEmail()
                     ? redirect()->intended('/customer/profile?verified=yes')
-                    : view('decoweb::customers.auth.verify-email');
+                    : view('upepo::customers.auth.verify-email');
     }
 }

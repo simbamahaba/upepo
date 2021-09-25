@@ -37,7 +37,7 @@ class Customer extends Authenticatable implements MustVerifyEmail
 
     public function orders()
     {
-        return $this->hasMany('Decoweb\Panelpack\Models\Order');
+        return $this->hasMany(Order::class);
     }
 
     /**

@@ -6,7 +6,7 @@ return[
      * --------------------------------------
      * Email verification Language Lines (RO)
      * --------------------------------------
-     * by DECOBEB
+     * by DECOWEB
      *
      * */
 

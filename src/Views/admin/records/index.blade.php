@@ -6,7 +6,7 @@
     @endif
 
     @if( !empty(array_filter($settings['filter'])) )
-        <form action="{{ route('records.index',[$config['tableName']]) }}" class="form-horizontal form-label-left" method="POST" id="filters">
+        <form action="{{ route('records.index',[$config['tableName'], $id]) }}" class="form-horizontal form-label-left" method="POST" id="filters">
             @csrf @method('POST')
             <fieldset>
                 <legend>Filtre</legend>

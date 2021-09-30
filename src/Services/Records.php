@@ -111,9 +111,6 @@ class Records extends Controller
         $settings = $this->getSettings($tableName);
         $record = $this->findViaModel($settings['config']['model'], $recordId);
 
-//        dd($settings);
-//        dd($record);
-
         $rules = $this->generateRules($settings['elements'], $tableName);
 
         $this->validate($request, $rules);
@@ -127,10 +124,13 @@ class Records extends Controller
                 }
             }
             if($data['type'] == 'checkbox'){
-                $record->$column = (!empty($request->$column) && $request->$column == 'on')?1:2;
+                # 1 is always the default value:
+                # enum|nu,da -> "nu" is default
+                $record->$column = (!empty($request->$column) && $request->$column == 'on')?2:1;
             }else{
-                $colType = explode('|',$data['colType']); # We need to set manually decimal columns to NULL if input is empty ("")
+                $colType = explode('|',$data['colType']);
                 if( $colType[0] == 'decimal' && trim($request->$column) == '' ){
+                    # We need to set manually decimal columns to NULL if input is empty ("")
                     $record->$column = null;
                 }else{
                     $record->$column = $request->$column;

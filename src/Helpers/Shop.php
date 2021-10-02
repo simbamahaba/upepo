@@ -4,6 +4,7 @@ namespace Simbamahaba\Upepo\Helpers;
 use Simbamahaba\Upepo\Helpers\Contracts\ShopContract;
 use \Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 class Shop implements ShopContract
 {
     private $category;
@@ -30,15 +31,15 @@ class Shop implements ShopContract
             return $ul.'<a href="'.url('/').'" >Acasa</a></li></ul>';
         }
         if($category->parent == 0){
-            return $ul.'<a href="'.url('/').'" >Acasa</a></li><li><a href="'.url('categorie/'.$category->id.'/'.str_slug($category->name)).'" >'.$category->name.'</a></li></ul>';
+            return $ul.'<a href="'.url('/').'" >Acasa</a></li><li><a href="'.url('categorie/'.$category->id.'/'.Str::slug($category->name)).'" >'.$category->name.'</a></li></ul>';
         }
 
         $parent = $this->category->select('id','name','parent')->find($category->parent);
-        $slug = str_slug($parent->name);
+        $slug = Str::slug($parent->name);
         $parents = "<li><a href=\"".url('categorie/'.$parent->id.'/'.$slug)."\">".$parent->name."</a></li>".$parents;
         $this->breadcrumbs($parent,$class,$parents);
 
-        return $ul.'<a href="'.url('/').'" >Acasa</a></li>'.$parents.'<li><a href="'.url('categorie/'.$category->id.'/'.str_slug($category->name)).'" >'.$category->name.'</a></li></ul>';
+        return $ul.'<a href="'.url('/').'" >Acasa</a></li>'.$parents.'<li><a href="'.url('categorie/'.$category->id.'/'.Str::slug($category->name)).'" >'.$category->name.'</a></li></ul>';
     }
 
     public function priceWithoutVAT($price)

@@ -3,6 +3,7 @@
 namespace Simbamahaba\Upepo;
 
 use Illuminate\Support\ServiceProvider;
+use Simbamahaba\Upepo\Console\Commands\CreateAdminCommand;
 use Simbamahaba\Upepo\Providers\EventServiceProvider;
 class UpepoServiceProvider extends ServiceProvider
 {
@@ -79,5 +80,11 @@ class UpepoServiceProvider extends ServiceProvider
         $this->mergeConfigFrom( __DIR__.'/config/services_fb.php','services');
 
         $this->app->register(EventServiceProvider::class);
+
+        if( $this->app->runningInConsole()){
+            $this->commands([
+                CreateAdminCommand::class,
+            ]);
+        }
     }
 }

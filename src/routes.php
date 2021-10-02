@@ -14,27 +14,6 @@ use Simbamahaba\Upepo\Controllers\Admin\MapsController;
 use Simbamahaba\Upepo\Controllers\Admin\SettingsController;
 use Simbamahaba\Upepo\Controllers\Admin\SitemapController;
 use UniSharp\LaravelFilemanager\Lfm;
-/*
- * Starter Kit
- */
-use Simbamahaba\Upepo\Models\Admin;
-use Illuminate\Support\Facades\Hash;
-
-
-Route::get('/start', function () {
-    return view('upepo::start');
-});
-Route::post('/kit',function(){
-    if( !empty($_POST['email']) && !empty($_POST['password']) ){
-        $admin = new Admin();
-        $admin->name = 'Andrei';
-        $admin->email = $_POST['email'];
-        $admin->password = Hash::make($_POST['password']);
-        $admin->save();
-        return redirect('/start');
-    }
-    return redirect('/start');
-});
 
 /***************************
  *

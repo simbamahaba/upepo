@@ -62,6 +62,12 @@ class UpepoServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/lang' => resource_path('lang/vendor/upepo'),
         ]);
+
+        if( $this->app->runningInConsole()){
+            $this->commands([
+                CreateAdminCommand::class,
+            ]);
+        }
     }
 
     /**
@@ -80,11 +86,5 @@ class UpepoServiceProvider extends ServiceProvider
         $this->mergeConfigFrom( __DIR__.'/config/services_fb.php','services');
 
         $this->app->register(EventServiceProvider::class);
-
-        if( $this->app->runningInConsole()){
-            $this->commands([
-                CreateAdminCommand::class,
-            ]);
-        }
     }
 }

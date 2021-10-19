@@ -28,6 +28,7 @@ class FilesController extends Controller
      * @param $tabela
      * @param $recordId
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     * @throws \Simbamahaba\Upepo\Exceptions\RecordException
      */
     public function create($tabela, $recordId)
     {
@@ -137,7 +138,7 @@ class FilesController extends Controller
 
 
     /**
-     * Retruns a string of valid mimeTypes
+     * Returns a string of valid mimeTypes
      * as they were defined in table's definition
      *
      * @param $config
@@ -174,7 +175,7 @@ class FilesController extends Controller
     /**
      * Deletes a file name from "files" table.
      * This action is observed by FileObserver
-     * which deletes the psysical file from storage.
+     * which deletes the physical file from storage.
      *
      * @param File $file
      * @return \Illuminate\Http\RedirectResponse

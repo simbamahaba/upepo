@@ -104,6 +104,9 @@
                             @if(session()->has('aborted'))
                                 @include('vendor.upepo.admin.layouts.parts.abortedMessage')
                             @endif
+                            @if(session()->has('danger'))
+                                @include('vendor.upepo.admin.layouts.parts.dangerMessage')
+                            @endif
                             @yield('section-content','section-content to add...')
                         </div>
                     </div>

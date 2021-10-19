@@ -86,16 +86,19 @@ class RecordsController extends Controller
     public function delete($tableName, $recordId)
     {
         $recordId = (int)$recordId;
-        $settings = $this->getSettings($tableName);
-        $config = $settings['config'];
 
-        $record = $this->records->findViaModel($config['model'], $recordId);
-
-        # If the record doesn't exist...
-        if(!$record){
+        try{
+            $settings = $this->getSettings($tableName);
+            $config = $settings['config'];
+            $record = $this->records->findViaModel($config['model'], $recordId);
+        }catch(\TypeError $t){
             return redirect()
-                ->route('records.index', [$config['tableName'], $config['tableId']])
-                ->with('mesaj', 'Inregistrare inexistenta.');
+                ->back()
+                ->with('danger', $t->getMessage());
+        }catch(\Exception $e){
+            return redirect()
+                ->back()
+                ->with('aborted', $e->getMessage());
         }
 
         if( $this->records->recordHasChildren($config['tableName'], $record->id) ){
@@ -135,7 +138,8 @@ class RecordsController extends Controller
      *
      * @param Request $request
      * @param string $tableName
-     * @return \Illuminate\Routing\Redirector
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request, $tableName)
     {
@@ -151,12 +155,13 @@ class RecordsController extends Controller
         return redirect()->route('records.index', [$tableName,$table->id])->with('mesaj', $message);
     }
 
+
     /**
      * Edits a record
      *
      * @param $tableName
      * @param $recordId
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
     public function edit($tableName, $recordId)
     {
@@ -233,71 +238,6 @@ class RecordsController extends Controller
             ->route('records.index', [$tableName, $table->id])
             ->with('mesaj', $message);
 
-    }
-
-
-    /**
-     * Update records' order | Delete multiple records
-     *
-     * @param Request $request
-     * @param         $tableName
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function recordsActions(Request $request, $tableName)
-    {
-        $tableName = (string)trim($tableName);
-        $tableData = $this->getTableData($tableName);
-        if( !$tableData ){
-            return redirect('admin/core/'.$tableName)->with('aborted','Tabela nu exista. [EROARE GRAVA]');
-        }
-        $fields = $this->getSettings($tableName);
-
-        if($request->has('changeOrder') && $fields['config']['functionSetOrder'] != 1){
-            return redirect('admin/core/'.$tableName)->with('aborted','Ordinea nu poate fi setata pentru aceasta tabela.');
-        }
-        if($request->has('deleteItems') && $fields['config']['functionDelete'] != 1){
-            return redirect('admin/core/'.$tableName)->with('aborted','Elementele nu pot fi sterse pentru aceasta tabela.');
-        }
-
-        $modelName = $tableData->model;
-        $model = '\App\\'.$modelName;
-        $message = '';
-        if( $request->has('changeOrder') && $request->changeOrder == 1 ) {
-            if( $request->has('orderId') && is_array($request->orderId) && count($request->orderId) > 0 ){
-                foreach($request->orderId as $id=>$newOrder){
-                    $record = $model::find((int)$id);
-                    if( $record && $newOrder != $record->order && $newOrder >= 0 ){
-                        if ( ctype_digit((string) trim($newOrder)) !== true ) {
-                            continue;
-                        }
-                        $record->order = (int)$newOrder;
-                        $record->save();
-                    }else{
-                        continue;
-                    }
-                }
-                $message = 'Ordinea a fost schimbata cu succes!';
-            }
-        }
-        if( $request->has('deleteItems') && $request->deleteItems == 1){
-            if( $request->has('item') && is_array($request->item) && count($request->item) > 0){
-                $toDelete = [];
-                foreach($request->item as $itemKey=>$item){
-                    $record = $model::find((int)$itemKey);
-                    if( !is_null($record) && $this->records->recordHasChildren($tableName,$record->id) ){
-                        continue;
-                    }
-                    $toDelete[] = $itemKey;
-                }
-                $howMany = count($toDelete);
-                $model::whereIn('id',$toDelete)->delete();
-                $message = "Un numar de $howMany de elemente au fost sterse.";
-            }else{
-                $message = "Niciun element nu a fost sters.";
-            }
-        }
-
-        return redirect('admin/core/'.$tableName)->with('mesaj', $message);
     }
 
 

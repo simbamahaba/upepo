@@ -3,6 +3,7 @@
 namespace Simbamahaba\Upepo\Services;
 
 use App\Http\Controllers\Controller;
+use Simbamahaba\Upepo\Exceptions\RecordException;
 use Simbamahaba\Upepo\Helpers\Contracts\PicturesContract;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -111,6 +112,9 @@ class Records extends Controller
         $settings = $this->getSettings($tableName);
         $record = $this->findViaModel($settings['config']['model'], $recordId);
 
+//        dd($settings);
+//        dd($record);
+
         $rules = $this->generateRules($settings['elements'], $tableName);
 
         $this->validate($request, $rules);
@@ -128,9 +132,8 @@ class Records extends Controller
                 # enum|nu,da -> "nu" is default
                 $record->$column = (!empty($request->$column) && $request->$column == 'on')?2:1;
             }else{
-                $colType = explode('|',$data['colType']);
+                $colType = explode('|',$data['colType']); # We need to set manually decimal columns to NULL if input is empty ("")
                 if( $colType[0] == 'decimal' && trim($request->$column) == '' ){
-                    # We need to set manually decimal columns to NULL if input is empty ("")
                     $record->$column = null;
                 }else{
                     $record->$column = $request->$column;
@@ -642,24 +645,36 @@ class Records extends Controller
     }
 
     /**
-     * @param string $tableName
+     * @param $modelName
      * @param int $id
      * @return mixed
+     * @throws RecordException
      */
     public function findViaModel($modelName, int $id)
     {
         $model = $this->makeDynamicModel($modelName);
         $record = $model::find($id);
+        if( ! $record instanceof $model ){
+            throw RecordException::notFound($id);
+        };
         return $record;
     }
 
+    /**
+     * @param $modelName
+     * @return mixed
+     */
     public function newRecordViaModel($modelName)
     {
         $model = $this->makeDynamicModel($modelName);
         return new $model();
     }
 
-    public function makeDynamicModel($modelName)
+    /**
+     * @param string $modelName
+     * @return string
+     */
+    public function makeDynamicModel(string $modelName): string
     {
         return 'App\\Models\\' . trim($modelName);
     }

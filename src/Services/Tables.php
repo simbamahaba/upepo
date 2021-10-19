@@ -110,6 +110,7 @@ class Tables
         }
 
         if(array_key_exists('filter', $validated)){
+            //dd($validated['filter']);
             $filters = explode(',',$validated['filter']);
             foreach($filters as $filter){
                 $table['filter'][] = $filter;

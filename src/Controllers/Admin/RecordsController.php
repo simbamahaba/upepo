@@ -221,10 +221,16 @@ class RecordsController extends Controller
 
     }
 
+    /**
+     * @param Request $request
+     * @param $tableName
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Throwable
+     */
     public function updateOrder(Request $request, $tableName)
     {
-        $table = $this->getTableData($tableName);
         $message = 'Ordinea a fost schimbata cu succes!';
+        $messageType = 'mesaj';
 
         try {
             $this->records->tableAcceptsReordering($tableName);
@@ -232,11 +238,12 @@ class RecordsController extends Controller
             $this->records->updateOrder($recordsToUpdate, $tableName);
         }catch (\Exception $exception){
             $message = $exception->getMessage();
+            $messageType = 'aborted';
         }
 
         return redirect()
-            ->route('records.index', [$tableName, $table->id])
-            ->with('mesaj', $message);
+            ->back()
+            ->with($messageType, $message);
 
     }
 

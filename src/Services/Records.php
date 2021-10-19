@@ -4,6 +4,7 @@ namespace Simbamahaba\Upepo\Services;
 
 use App\Http\Controllers\Controller;
 use Simbamahaba\Upepo\Exceptions\RecordException;
+use Simbamahaba\Upepo\Exceptions\TableDefinition;
 use Simbamahaba\Upepo\Helpers\Contracts\PicturesContract;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -539,15 +540,10 @@ class Records extends Controller
      */
     public function tableAcceptsReordering($tableName)
     {
-        $fields = $this->getSettings($tableName);
+        $config = $this->getConfig($tableName);
 
-        throw_if( !$fields,
-            \Exception::class,
-            "Tabela $tableName nu exista in baza de date." );
-
-        throw_if( $fields['config']['functionSetOrder'] != 1,
-            \Exception::class,
-            "Ordinea nu poate fi setata pentru aceasta tabela." );
+        throw_if( $config['functionSetOrder'] != 1,
+            TableDefinition::tableAcceptsNotReordering($tableName));
 
         return true;
     }

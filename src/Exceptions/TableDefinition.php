@@ -14,4 +14,9 @@ class TableDefinition extends \Exception
         return new static(get_called_class().": The table '$tableName' doesn't accept files.", 7);
     }
 
+    public static function tableAcceptsNotReordering($tableName)
+    {
+        return new static(get_called_class().": The order cannot be changed for the table  '$tableName'.", 8);
+    }
+
 }

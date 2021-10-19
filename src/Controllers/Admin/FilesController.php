@@ -56,7 +56,7 @@ class FilesController extends Controller
         $name = $config['displayedName'];
         $pageName =  $config['pageName'];
         $noFiles = $settings['messages']['no_files'];
-        
+
         return view('upepo::admin.files.create',[
             'filesMax'  => $filesMax,
             'record'    => $record,
@@ -80,53 +80,44 @@ class FilesController extends Controller
      */
     public function store(Request $request, $tabela, $recordId)
     {
+        try {
+            $config = $this->getConfig($tabela);
+            $this->tableHasFiles($tabela);
+            $record = $this->records->findViaModel($config['model'], $recordId);
+        }catch (\Exception $e){
+            return redirect()
+                ->back()
+                ->with('aborted',$e->getMessage());
+        }
+
+        $allowedMimetypes = $this->getAllowedMimeTypes($config);
+
         $this->validate($request,[
             'title' => 'required|max:100',
-            'file'  => 'required|file|mimetypes:application/pdf',
+            'file'  => "required|file|mimetypes:$allowedMimetypes",
         ],[
             'title.required'    => 'Fisierul trebuie sa aiba un nume.',
-            'file.mimetypes'    => 'Formatul fisierului nu este adecvat',
+            'file.mimetypes'    => 'Formatul fisierului nu este adecvat. Formate acceptate: '.$config['filesExt'],
         ]);
 
-        $table = $this->getTableData($tabela);
-        # Check 1 - if table exists
-        if($table === false){
-            $request->session()->flash('mesaj','Acesta tabela nu exista.');
-            return redirect()->back();
-        }
 
-        # Check 2 - if record exists in the table
-        $record = $this->records->findViaModel($table->model, $recordId);
+        $filesMax = (int)$config['filesMax'];
 
-        if(null == $record){
-            $request->session()->flash('mesaj','Acesta inregistrare nu exista.');
-            return redirect()->back();
-        }
+        // Compare number of files in Files for the record with $filesMax
+        $ordine = File::where('table_id', $config['tableId'])->where('record_id',$recordId)->max('ordine');
+        $files_already_added = File::where('table_id', $config['tableId'])->where('record_id',$recordId)->count();
 
-        # Check 3 - if record accepts files, and how many($filesMax)
-        $settings = $this->getSettings($tabela);
-        if((int)$settings['config']['functionFile'] != 1){
-            $request->session()->flash('mesaj','Acesta inregistrare nu accepta fisiere.');
-            return redirect('admin/core/'.$tabela.'/addFile/'.$recordId);
-        }else{
-            $filesMax = (int)$settings['config']['filesMax'];
-        }
-
-        //Check 4 - compare number of files in Files for the record with $filesMax
-        $ordine = File::where('table_id', $table->id)->where('record_id',$recordId)->max('ordine');
-        $filesNumber = File::where('table_id', $table->id)->where('record_id',$recordId)->count();
-
-        if($filesMax == (int)$filesNumber){
-            $request->session()->flash('mesaj',"Numarul maxim de fisiere a fost deja atins ($filesNumber).");
+        if($filesMax == (int)$files_already_added){
+            $request->session()->flash('mesaj',"Numarul maxim de fisiere a fost deja atins ($files_already_added).");
             return redirect('admin/core/'.$tabela.'/addFile/'.$recordId);
         }
 
-        //Store file info in Files table
+        // Store file info in Files table
         $time = strval(time());
-        $fileName = $tabela.'_ID'.$table->id.'_'.$recordId.'_'.$time.'.'.$request->file('file')->getClientOriginalExtension();
+        $fileName = $tabela.'_ID'.$config['tableId'].'_'.$recordId.'_'.$time.'.'.$request->file('file')->getClientOriginalExtension();
 
         $file = new File();
-        $file->table_id = $table->id;
+        $file->table_id = $config['tableId'];
         $file->record_id = (int)$recordId;
         $file->ordine = ++$ordine;
         $file->name = $fileName;
@@ -135,13 +126,39 @@ class FilesController extends Controller
 
         // Store file on disk
 //      $disk = ( config('app.env') == 'production' )?'files':'files_dev';
-        $path = trim(strtolower($settings['config']['tableName']))."/$recordId/";
+        $path = trim(strtolower($config['tableName']))."/$recordId/";
         Storage::disk('uploaded_files')->putFileAs($path, $request->file('file'), $fileName);
         $request->session()->flash('mesaj','Fisierul a fost adugat cu succes!');
         return redirect('admin/core/'.$tabela.'/addFile/'.$recordId);
     }
 
+    private function getAllowedMimeTypes($config)
+    {
+        $types = [
+          'pdf'  => 'application/pdf',
+          'txt'  => 'text/plain',
+          'odt'  => 'application/vnd.oasis.opendocument.text',
+          'xls'  => 'application/vnd.ms-excel',
+          'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'doc'  => 'application/msword',
+          'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            // application/vnd.openxmlformats-officedocument.wordprocessingml.document
+          'ppt'  => 'application/vnd.ms-powerpoint',
+          'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        ];
 
+        $extentions = explode(',', $config['filesExt']);
+        $allowed = [];
+
+        foreach($extentions as $extention){
+            $extention = trim($extention);
+            if(array_key_exists($extention, $types)){
+                $allowed[] = $types[$extention];
+            }
+        }
+
+        return implode(',',$allowed);
+    }
     /**
      * Deletes a file name from "files" table.
      * This action is observed by FileObserver

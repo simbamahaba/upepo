@@ -16,19 +16,17 @@ trait Core
     public function getTableData(string $tableName)
     {
         $tableName = trim($tableName);
-        $method= __METHOD__;
-        $data = Cache::rememberForever('core_'.$tableName, function() use ($tableName, $method) {
+
+        return Cache::rememberForever('core_'.$tableName, function() use ($tableName) {
 
             $data = SysCoreSetup::table( $tableName );
 
             if( ! $data instanceof SysCoreSetup ) {
                 throw TableDefinition::notfound($tableName);
-            };
+            }
 
             return $data;
         });
-
-        return $data;
     }
 
     public function findOrFail($id)
@@ -151,7 +149,7 @@ trait Core
         $config = $this->getConfig($tableName);
         if( !$config['functionFile'] ){
             throw TableDefinition::tableAcceptsNoFiles($tableName);
-        };
+        }
         return true;
     }
 }

@@ -69,6 +69,7 @@ class FilesController extends Controller
         ]);
     }
 
+
     /**
      * Stores a file for a specified table record
      *
@@ -108,8 +109,8 @@ class FilesController extends Controller
         $files_already_added = File::where('table_id', $config['tableId'])->where('record_id',$recordId)->count();
 
         if($filesMax == (int)$files_already_added){
-            $request->session()->flash('mesaj',"Numarul maxim de fisiere a fost deja atins ($files_already_added).");
-            return redirect('admin/core/'.$tabela.'/addFile/'.$recordId);
+            return redirect('admin/core/'.$tabela.'/addFile/'.$recordId)
+                ->with('mesaj', "Numarul maxim de fisiere a fost deja atins ($files_already_added).");
         }
 
         // Store file info in Files table
@@ -128,10 +129,20 @@ class FilesController extends Controller
 //      $disk = ( config('app.env') == 'production' )?'files':'files_dev';
         $path = trim(strtolower($config['tableName']))."/$recordId/";
         Storage::disk('uploaded_files')->putFileAs($path, $request->file('file'), $fileName);
-        $request->session()->flash('mesaj','Fisierul a fost adugat cu succes!');
-        return redirect('admin/core/'.$tabela.'/addFile/'.$recordId);
+
+        return redirect()
+            ->route('create.file',[$tabela, $recordId])
+            ->with('mesaj', 'Fisierul a fost adugat cu succes!');
     }
 
+
+    /**
+     * Retruns a string of valid mimeTypes
+     * as they were defined in table's definition
+     *
+     * @param $config
+     * @return string
+     */
     private function getAllowedMimeTypes($config)
     {
         $types = [
@@ -142,7 +153,6 @@ class FilesController extends Controller
           'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           'doc'  => 'application/msword',
           'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            // application/vnd.openxmlformats-officedocument.wordprocessingml.document
           'ppt'  => 'application/vnd.ms-powerpoint',
           'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         ];
@@ -159,6 +169,8 @@ class FilesController extends Controller
 
         return implode(',',$allowed);
     }
+
+
     /**
      * Deletes a file name from "files" table.
      * This action is observed by FileObserver
@@ -174,6 +186,7 @@ class FilesController extends Controller
         return redirect()->back()->with('mesaj','Fisierul a fost sters!');
     }
 
+
     /**
      * Updates the order and the description for a file
      *
@@ -185,16 +198,13 @@ class FilesController extends Controller
      */
     public function update(Request $request, $tableId, $recordId)
     {
-        if( !ctype_digit($tableId) || !ctype_digit($recordId) ){
-            return redirect('/');
-        }
         $tableId = (int)$tableId;
         $recordId = (int)$recordId;
 
         $recordFiles = File::where('table_id', $tableId)->where('record_id', $recordId)->orderBy('ordine')->get();
 
         if ( null === $recordFiles ){
-            return redirect()->back();
+            return redirect()->back()->with('mesaj', 'Nicio schimbare.');
         }
 
         foreach($recordFiles as $recordFile){

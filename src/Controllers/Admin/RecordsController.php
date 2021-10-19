@@ -4,18 +4,10 @@ namespace Simbamahaba\Upepo\Controllers\Admin;
 
 use Simbamahaba\Upepo\Events\RecordDeletedEvent;
 use Simbamahaba\Upepo\Services\Records;
-use Dompdf\Image\Cache;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-//use Illuminate\Support\Facades\Schema;
-//use Decoweb\Panelpack\Models\SysCoreSetup;
-//use Decoweb\Panelpack\Models\Image as Poza;
 use Illuminate\Support\Facades\DB;
-//use Illuminate\Pagination\LengthAwarePaginator;
-//use Illuminate\Pagination\Paginator;
-//use Illuminate\Support\Collection;
-//use Illuminate\Support\Facades\Cache;
-//use Illuminate\Support\Str;
 use Simbamahaba\Upepo\Helpers\Traits\Core;
 class RecordsController extends Controller
 {
@@ -43,26 +35,25 @@ class RecordsController extends Controller
      *
      * @param $tableName
      * @param $id
-     * @return \Illuminate\View\View
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Routing\Redirector
      */
     public function index($tableName, $id)
     {
-        Cache::clear();
-        $tableData = $this->getTableData($tableName);
-        $settings = $this->getSettings($tableName);
-
-        if ($settings === false) {
+//        Cache::flush();
+        try{
+            $settings = $this->getSettings($tableName);
+        }catch (\Exception $e){
             $this->clearTableCoreCache($tableName);
-            return redirect('admin/home')->with('aborted', 'Tabela nu exista in baza de date.');
+            return redirect('admin/home')
+                ->with('aborted', $e->getMessage());
         }
 
-        $currentUrl = route('records.index', [$tableName, $tableData->id]);
+        $config = $this->getConfig($tableName);
+
+        $currentUrl = route('records.index', [$tableName, $config['tableId']]);
         if( url()->current() !== $currentUrl){
             return redirect($currentUrl);
         }
-
-        $config = $settings['config'];
-
 //        $this->qry();
         return view('upepo::admin.records.index',
             [
@@ -170,15 +161,21 @@ class RecordsController extends Controller
     public function edit($tableName, $recordId)
     {
         $recordId = (int)$recordId;
-        $settings = $this->getSettings( $tableName );
-        $fields = $this->records->getOptions($settings, $recordId);
-        $record = $this->records->findViaModel($settings['config']['model'], $recordId);
 
-        if( null === $record){
-            return redirect('admin/core/'.trim($tableName))->with('aborted','Inregistrare inexistenta');
+        try{
+            $settings = $this->getSettings( $tableName );
+            $record = $this->records->findViaModel($settings['config']['model'], $recordId);
+        }catch (\Exception $e){
+            return redirect()
+                ->back()
+                ->with('aborted', $e->getMessage());
         }
 
-        return view('upepo::admin.records.edit',['record'=>$record, 'fields'=>$fields]);
+        return view('upepo::admin.records.edit',[
+            'record' => $record,
+            'fields' => $this->records->getOptions($settings, $recordId),
+            ]
+        );
     }
 
     /**

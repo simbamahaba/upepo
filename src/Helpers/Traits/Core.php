@@ -4,7 +4,7 @@ namespace Simbamahaba\Upepo\Helpers\Traits;
 use Simbamahaba\Upepo\Models\SysCoreSetup;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
-
+use Simbamahaba\Upepo\Exceptions\TableDefinition;
 trait Core
 {
     /**
@@ -16,12 +16,14 @@ trait Core
     public function getTableData(string $tableName)
     {
         $tableName = trim($tableName);
-
-        $data = Cache::rememberForever('core_'.$tableName, function() use ($tableName) {
+        $method= __METHOD__;
+        $data = Cache::rememberForever('core_'.$tableName, function() use ($tableName, $method) {
 
             $data = SysCoreSetup::table( $tableName );
 
-            if( ! $data instanceof SysCoreSetup ) return false;
+            if( ! $data instanceof SysCoreSetup ) {
+                throw TableDefinition::notfound($tableName);
+            };
 
             return $data;
         });
@@ -137,9 +139,19 @@ trait Core
         return (bool)$settings['config']['functionImages'];
     }
 
-    public function tableHasFiles( string $tableName)
+    /**
+     * Checks if the specified table accepts files uploads
+     *
+     * @param string $tableName
+     * @return bool
+     * @throws TableDefinition
+     */
+    public function tableHasFiles(string $tableName)
     {
-        $settings = $this->getSettings($tableName);
-        return (bool)$settings['config']['functionFile'];
+        $config = $this->getConfig($tableName);
+        if( !$config['functionFile'] ){
+            throw TableDefinition::tableAcceptsNoFiles($tableName);
+        };
+        return true;
     }
 }

@@ -3,6 +3,7 @@ namespace Simbamahaba\Upepo\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Simbamahaba\Upepo\Exceptions\TableDefinition;
 use Simbamahaba\Upepo\Models\File;
 use Illuminate\Support\Facades\Storage;
 use Simbamahaba\Upepo\Helpers\Traits\Core;
@@ -30,37 +31,38 @@ class FilesController extends Controller
      */
     public function create($tabela, $recordId)
     {
-        $recordId = (int)$recordId;
-        $table = $this->getTableData($tabela);
-
-        if( $table === false || $recordId == 0){
-            request()->session()->flash('mesaj','Acesta tabela nu exista.');
-            return redirect()->back();
+        try {
+            $config = $this->getConfig($tabela);
+            $this->tableHasFiles($tabela);
+        }catch (TableDefinition $e){
+            return redirect()
+                ->back()
+                ->with('aborted',$e->getMessage());
         }
+
+        $recordId = (int)$recordId;
 
         $settings = $this->getSettings($tabela);
-        if((int)$settings['config']['functionFile'] != 1){
-            return redirect()->back();
-        }
 
-        $record = $this->records->findViaModel($table->model, $recordId);
+        $record = $this->records->findViaModel($config['model'], $recordId);
 
         if(null == $record){
             return redirect()->back();
         }
-        $files = File::where('table_id', $table->id)
+        $files = File::where('table_id', $config['tableId'])
             ->where('record_id',$recordId)->orderBy('ordine','asc')->get();
 
-        $filesMax = (int)$settings['config']['filesMax'];
-        $name = $settings['config']['displayedName'];
-        $pageName =  $settings['config']['pageName'];
+        $filesMax = (int)$config['filesMax'];
+        $name = $config['displayedName'];
+        $pageName =  $config['pageName'];
         $noFiles = $settings['messages']['no_files'];
+        
         return view('upepo::admin.files.create',[
             'filesMax'  => $filesMax,
             'record'    => $record,
             'name'      => $name,
             'tabela'    => $tabela,
-            'idTabela'  => $table->id,
+            'idTabela'  => $config['tableId'],
             'pageName'  => $pageName,
             'files'     => $files,
             'noFiles'   => $noFiles,

@@ -2,6 +2,7 @@
 
 namespace Simbamahaba\Upepo\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Simbamahaba\Upepo\Models\SysCoreSetup;
@@ -143,7 +144,7 @@ class Tables
                 $table['elements'][$element['databaseName']]['selectExtra'] = $extra;
             }
         }
-//        dd($table);
+
         return $table;
     }
 
@@ -158,9 +159,14 @@ class Tables
         $tabela->visible = $table['config']['functionVisible'];
         $tabela->save();
 
-//        return $table;
+        $this->getSettings($tabela->table_name);
+        return $tabela;
     }
 
+    /**
+     * @param $table
+     * @return bool
+     */
     public function createTable($table)
     {
         $tableName = $table['config']['tableName'];
@@ -173,7 +179,6 @@ class Tables
             $tab->increments('id');
 
             foreach ($table['elements'] as $column => $property) {
-                $type = '';
                 $length = '';
 
                 $this->hasParents += ($property['type'] == 'select')? 1 : 0;
@@ -201,6 +206,9 @@ class Tables
                         $enum = explode(',',$param[1]);
                         $enum[0] = (string)trim($enum[0]);
                         $enum[1] = (string)trim($enum[1]);
+                        break;
+                    case 'date':
+                        $type = 'date';
                         break;
                     default: throw new \Exception("Tipul de date pentru coloana '$column' este invalid.");
                 }
@@ -270,6 +278,10 @@ class Tables
         return true;
     }
 
+    /**
+     * @param $model
+     * @return bool
+     */
     public function makeModel($model)
     {
         $model = (string)trim($model);
@@ -289,13 +301,21 @@ class $model extends Model
     //
 }
 BOB;
-        return file_put_contents("../app/Models/$model".".php", $draft);
+        return (bool)file_put_contents("../app/Models/$model".".php", $draft);
 
     }
 
     public function messageTableCreated($tableCreated, $modelCreated)
     {
-        return 'okkkkkkk';
+        if($tableCreated !== false && $modelCreated !== false){
+            return 'Table & model created successfully!';
+        }
+        return 'Table or model NOT created!';
+    }
+
+    public function tableCreatedSuccessfully($tableCreated, $modelCreated)
+    {
+        return $tableCreated === true && $modelCreated === true;
     }
 
     /**
@@ -318,7 +338,8 @@ BOB;
      */
     public function removeEloquentModel($model)
     {
-        $model = "../app/Models/".trim($model).".php";
-        return unlink(realpath($model));
+        $modelFile = realpath("../app/Models/".trim($model).".php");
+        if( file_exists($modelFile) ) return unlink($modelFile);
+        return false;
     }
 }

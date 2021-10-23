@@ -59,17 +59,22 @@ class TablesController extends Controller
      * @param TableRequest $request
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Exception
      */
     public function store(TableRequest $request)
     {
-//        dd($request->filesExt);
+
         $table = $this->tables->collectTableInfo($request);
-//        dd($table);
-        $this->tables->saveTableInfo($table);
-//        dd($table);
+
+        $newTable = $this->tables->saveTableInfo($table);
+
         $tableCreated = $this->tables->createTable($table);
 
         $modelCreated = $this->tables->makeModel($table['config']['model']);
+
+        if( ! $this->tables->tableCreatedSuccessfully($tableCreated, $modelCreated) ){
+            $this->destroy($newTable);
+        }
 
         return redirect('admin/table-settings')
             ->with('mesaj', $this->tables->messageTableCreated($tableCreated, $modelCreated));

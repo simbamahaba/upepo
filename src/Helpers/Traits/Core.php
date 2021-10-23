@@ -152,4 +152,11 @@ trait Core
         }
         return true;
     }
+
+    public function tableAcceptsFiles(string $tableName)
+    {
+        $config = $this->getConfig($tableName);
+        return (bool)$config['functionFile'];
+
+    }
 }

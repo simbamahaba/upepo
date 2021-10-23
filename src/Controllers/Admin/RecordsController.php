@@ -123,9 +123,9 @@ class RecordsController extends Controller
      * Displays a page for creating a new record in the specified table
      *
      * @param string $tableName
-     * @return \Illuminate\View\View
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
      */
-    public function create($tableName)
+    public function create(string $tableName)
     {
         return view('upepo::admin.records.create',[
             'settings' => $this->records->getOptions( $this->getSettings($tableName) ),

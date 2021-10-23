@@ -26,7 +26,7 @@ class SysCoreSetupObserver
      * Images and Files names in "images" & "files" tables are
      * deleted "on cascade".
      *
-     * @param  SysCoreSetup  $sysCoreSetup
+     * @param SysCoreSetup $sysCoreSetup
      * @return void
      */
     public function deleted(SysCoreSetup $sysCoreSetup)
@@ -41,7 +41,7 @@ class SysCoreSetupObserver
             Storage::disk('uploads')->deleteDirectory('/'.$sysCoreSetup->table_name);
         }
 
-        if( $this->tableHasFiles( $sysCoreSetup->table_name) ){
+        if( $this->tableAcceptsFiles( $sysCoreSetup->table_name) ){
             Storage::disk('uploaded_files')->deleteDirectory('/'.$sysCoreSetup->table_name);
         }
 

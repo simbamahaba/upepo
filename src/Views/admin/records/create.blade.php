@@ -50,6 +50,21 @@
                 </div>
             </div>
             @break
+        @case('calendar')
+            <div class="item form-group">
+                <label for="{{ $name }}" class="col-form-label col-md-3 col-sm-3 label-align">{{ $field['friendlyName'].' '.$required }}</label>
+                <div class="col-md-6 col-sm-6">
+                    <input name="{{ $name }}" id="{{ $name }}" class="date-picker form-control" placeholder="dd-mm-yyyy" type="text" onfocus="this.type='date'" onmouseover="this.type='date'" onclick="this.type='date'" onblur="this.type='text'" onmouseout="timeFunctionLong(this)">
+                    <script>
+                        function timeFunctionLong(input) {
+                            setTimeout(function() {
+                                input.type = 'text';
+                            }, 60000);
+                        }
+                    </script>
+                </div>
+            </div>
+            @break
         @default
             <div class="item form-group">
                 <label for="{{ $name }}" class="col-form-label col-md-3 col-sm-3 label-align">{{ $field['friendlyName'].' '.$required }}</label>
@@ -81,14 +96,7 @@
     </div>
 </div>
 </fieldset>
-    <div class="form-group">
-        <div class='input-group date datePicker'>
-            <input type="text" class="form-control ">
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
-            </span>
-        </div>
-    </div>
+
 </form>
 @endsection
 @section('footer-assets')

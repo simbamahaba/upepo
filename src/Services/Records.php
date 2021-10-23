@@ -3,6 +3,7 @@
 namespace Simbamahaba\Upepo\Services;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Query\Builder;
 use Simbamahaba\Upepo\Exceptions\RecordException;
 use Simbamahaba\Upepo\Exceptions\TableDefinition;
 use Simbamahaba\Upepo\Helpers\Contracts\PicturesContract;
@@ -20,8 +21,7 @@ class Records extends Controller
     use Core;
 
     /**
-     * @param $config
-     * @param \Illuminate\Database\Query\Builder $query
+     * @param $settings
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|LengthAwarePaginator
      */
     public function paginateRecords($settings)
@@ -46,7 +46,7 @@ class Records extends Controller
 
         if ($config['functionSetOrder'] == 1 && $hasOrderByOrder == false) {
             $query->orderBy('order');
-        };
+        }
         $query->orderBy('created_at', 'desc');
 
         if ($config['functionRecursive'] == 1) {
@@ -113,9 +113,6 @@ class Records extends Controller
         $settings = $this->getSettings($tableName);
         $record = $this->findViaModel($settings['config']['model'], $recordId);
 
-//        dd($settings);
-//        dd($record);
-
         $rules = $this->generateRules($settings['elements'], $tableName);
 
         $this->validate($request, $rules);
@@ -173,9 +170,9 @@ class Records extends Controller
 
     /**
      * @param $config
-     * @param \Illuminate\Database\Query\Builder $query
+     * @param Builder $query
      */
-    public function selectColumnsWithParent($config, \Illuminate\Database\Query\Builder $query): void
+    public function selectColumnsWithParent($config, Builder $query): void
     {
         if ($config['functionRecursive'] == 0) {
             $query->select('id', 'order', 'created_at', $config['displayedName'], 'visible');
@@ -305,57 +302,57 @@ class Records extends Controller
             return false;
         }
         $rules = [];
-        $colsWithLength = ['varchar','char'];
-        $length = '';
-        $decimal = '';
-        foreach ($elements as $column=>$data){
-            $required = ($data['required'] == 1 && $data['type'] != 'checkbox')?'required|':'';
-            $colType = explode('|',$data['colType']);
-            if( $colType[0] == 'decimal'){
-                list($total,$decimals) = explode(',',$colType[1]);
-                $total = str_repeat('9',$total - $decimals);
-                $decimals = str_repeat('9',$decimals);
-                $decimal = "numeric|max:{$total}.{$decimals}|";
-            }elseif( in_array($colType[0], $colsWithLength)){
-                $length = 'max:' . $colType[1] .'|';
-            }
-            if( $data['type'] == 'select'){
-                $ids = DB::table($data['selectTable'])->pluck('id')->toArray();
-                //dd($ids);
-                $ids = implode(',',$ids);
 
-                if($data['selectTable'] == $tableName){
-                    $ids .= ',0';
-                }
-                /*dd($tableName);
-                dd($data['selectTable']);*/
-                $select = "integer|in:{$ids}|";
-            }else{
-                $select = '';
-            }
-            $rules[$column] = trim("{$required}{$select}{$decimal}{$length}",'|');
-            if(empty($rules[$column])){
-                unset($rules[$column]);
-            }
+        foreach ($elements as $column=>$data){
             $length = '';
             $decimal = '';
+            $select = '';
+            $date = '';
+            $required = ($data['required'] == 1 && $data['type'] != 'checkbox')?'required|':'';
+            $colType = explode('|',$data['colType']);
+
+            switch( $colType[0] ){
+                case 'decimal':
+                    list($total,$decimals) = explode(',',$colType[1]);
+                    $total = str_repeat('9',$total - $decimals);
+                    $decimals = str_repeat('9',$decimals);
+                    $decimal = "numeric|max:{$total}.{$decimals}|";
+                    break;
+                case 'varchar':
+                    $length = 'max:' . $colType[1] .'|';
+                    break;
+                case 'date':
+                    $date = 'date|';
+                    break;
+                default:
+
+            }
+
+            if( $data['type'] == 'select'){
+                $ids = DB::table($data['selectTable'])->pluck('id')->toArray();
+                $ids = implode(',',$ids);
+                if($data['selectTable'] == $tableName) $ids .= ',0';
+                $select = "integer|in:{$ids}|";
+            }
+
+            $rules[$column] = trim("{$required}{$select}{$decimal}{$length}{$date}",'|');
+            if( empty($rules[$column]) ) unset($rules[$column]);
         }
 
-        //dd($rules);
         return $rules;
     }
 
 
     /**
      * @param array $settings
-     * @param null $excludeCurrentRecordId
+     * @param bool $excludeCurrentRecordId
      * @return array
      */
     public function getOptions(array $settings, $excludeCurrentRecordId = false)
     {
         if( !in_array('select', array_column($settings['elements'], 'type')) ){
             return $settings;
-        };
+        }
         foreach($settings['elements'] as &$field){
             if($field['type'] == 'select'){
                 if ( $field['selectTable'] != $settings['config']['tableName']) {
@@ -455,7 +452,7 @@ class Records extends Controller
     /**
      * Generates filters data
      *
-     * @param string $tableName
+     * @param $settings
      * @return array|false
      */
     public function generateFilters($settings)
@@ -499,7 +496,7 @@ class Records extends Controller
      * Calculates how many columns must be spanned
      * in the records table head
      *
-     * @param array $settings
+     * @param array $config
      * @return int
      */
     public function getSpannedColumns(array $config): int
@@ -532,6 +529,7 @@ class Records extends Controller
 
         return true;
     }
+
 
     /**
      * @param $tableName

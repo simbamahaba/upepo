@@ -11,7 +11,7 @@ class TablesMenuComposer
 
     public function __construct()
     {
-//        Cache::flush();
+        Cache::flush();
         $this->tablesMenu = $this->toMenu();
     }
 
@@ -19,7 +19,7 @@ class TablesMenuComposer
     {
         $sidebar_menu = Cache::rememberForever('sidebar_tables', function(){
             $tables = SysCoreSetup::select('id','name', 'table_name')->orderBy('order')->get();
-            $menu= "<div class=\"menu_section\"><h3>Pagini</h3><ul class=\"nav side-menu\">";
+            $menu= "<div class=\"menu_section\"><h3>". __('upepo::admin.pages') ."</h3><ul class=\"nav side-menu\">";
             foreach($tables as $table){
                 $menu .= "<li><a href=\"".url('admin/core/'.$table->table_name.'/id/'.$table->id.'/')."\"><i class=\"fa fa-angle-double-right\"></i> ".$table->name."</a></li>";
             }

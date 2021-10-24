@@ -6,7 +6,7 @@
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
                     <a href="{{ url('admin/home') }}" class="site_title"><i class="panelIcon home"></i>
-                    <span>Administrare</span>
+                    <span>{{__('upepo::admin.admin_panel')}}</span>
                     </a>
                 </div>
                 <div class="clearfix"></div>

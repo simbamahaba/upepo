@@ -11,7 +11,7 @@ class TablesMenuComposer
 
     public function __construct()
     {
-        Cache::flush();
+//        Cache::flush();
         $this->tablesMenu = $this->toMenu();
     }
 

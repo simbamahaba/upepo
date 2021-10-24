@@ -4,9 +4,7 @@ Admin Panel for Laravel 8.*
 
 ## Installation
 
-Install the package through [Composer](http://getcomposer.org/). 
-
-    composer require "simbamahaba/upepo"
+    composer require simbamahaba/upepo
 
 1) Publish vendors files _php artisan vendor:publish_
 

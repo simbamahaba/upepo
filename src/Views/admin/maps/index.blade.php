@@ -1,5 +1,13 @@
 @extends('vendor.upepo.admin.layouts.master')
 @section('section-title') Hartă @endsection
+@section('header-assets')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+@endsection
 @section('section-content')
     <style>
         #map {
@@ -14,7 +22,7 @@
         <h5>Instrucțiuni de folosire:</h5>
         <ol type="1">
             <li>Poziționați mouse-ul pe locația exactă a sediului firmei;</li>
-            <li>Click dreapta pe hartă (va apărea un simbol care indică locația firmei);</li>
+            <li>Click pe hartă (va apărea un simbol care indică locația firmei);</li>
             <li>Apăsați butonul de mai jos pentru a salva locația.</li>
         </ol>
         </div>
@@ -77,37 +85,31 @@
 @endsection
 @section('footer-assets')
 <script>
-    function initMap() {
-        let myLatlng = {lat: {{ $map->latitude }}, lng: {{ $map->longitude }}};
-        let infowindow = new google.maps.InfoWindow();
-        let map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 16,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            center: myLatlng
-        });
+    let contentString = "<b style='font-size: 12px;'>{{ $map->company }}</b>";
+    contentString += "<br/><b style='font-size: 12px;'>Judet:</b><span  style='font-size: 12px;'> {{ $map->region }}</span><br/><b style='font-size: 12px;'>Oras:</b> <span  style='font-size: 12px;'>{{ $map->city }}</span><br/><b style='font-size: 12px;'>Adresa</b><span style='font-size: 12px;'>: {{ $map->address }}</span>";
+    let latitude = "{{ $map->latitude }}";
+    let longitude = "{{ $map->longitude }}";
+    let mymap = L.map('map').setView([latitude, longitude], 13);
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: '{{ env('LEAFLET_ACCESS_TOKEN') }}'
+    }).addTo(mymap);
+    let marker = L.marker([latitude, longitude], {
+        draggable: true
+    }).addTo(mymap);
+    marker.bindPopup(contentString).openPopup();
+    function onMapClick(e) {
 
-        let marker = new google.maps.Marker({
-            position: myLatlng,
-            map: map
-        });
-
-        let contentString = "<b style='font-size: 12px;'>Companie: {{ $map->company }}</b>";
-        contentString += "<br/><b style='font-size: 12px;'>Judet:</b><span  style='font-size: 12px;'> {{ $map->region }}</span><br/><b style='font-size: 12px;'>Oras:</b> <span  style='font-size: 12px;'>{{ $map->city }}</span><br/><b style='font-size: 12px;'>Adresa</b><span style='font-size: 12px;'>: {{ $map->address }}</span>";
-        infowindow.setContent(contentString);
-        infowindow.setPosition(myLatlng);
-        infowindow.open(map);
-
-        map.addListener('rightclick', function(event) {
-            new_location = event.latLng;
-            marker.setPosition(new_location);
-            document.getElementById('latitude').value = new_location.lat();
-            document.getElementById('longitude').value = new_location.lng();
-        });
+        document.getElementById('latitude').value = e.latlng.lat;
+        document.getElementById('longitude').value = e.latlng.lng;
+        marker.setLatLng(e.latlng).openPopup();
+        mymap.setView(e.latlng);
     }
 
-    window.onload = initMap;
-</script>
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=">
+    mymap.on('click', onMapClick);
 </script>
 @endsection

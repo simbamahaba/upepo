@@ -15,6 +15,10 @@ use Simbamahaba\Upepo\Controllers\Admin\SettingsController;
 use Simbamahaba\Upepo\Controllers\Admin\SitemapController;
 use UniSharp\LaravelFilemanager\Lfm;
 
+use Simbamahaba\Upepo\Controllers\ContactController;
+
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 /***************************
  *
  * ADMIN ROUTES
@@ -97,6 +101,6 @@ Route::post('admin/settings/social/update',[SettingsController::class, 'updateSo
 Route::get('admin/sitemap', [SitemapController::class, 'index'])->name('sitemap');
 Route::post('admin/sitemap/regenerate',[SitemapController::class, 'regenerate'])->name('sitemap.regenerate');
 
-Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
+Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'admin.only']], function () {
     Lfm::routes();
 });

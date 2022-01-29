@@ -17,8 +17,12 @@ use UniSharp\LaravelFilemanager\Lfm;
 
 use Simbamahaba\Upepo\Controllers\ContactController;
 
-Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+Route::get('/contact', [ContactController::class, 'index'])
+    ->middleware(['web'])
+    ->name('contact');
+Route::post('/contact', [ContactController::class, 'send'])
+    ->middleware(['web'])
+    ->name('contact.send');
 /***************************
  *
  * ADMIN ROUTES

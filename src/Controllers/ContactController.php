@@ -32,7 +32,7 @@ class ContactController extends Controller
         ));
 
         return redirect()
-            ->route('contact')
+            ->route('upepo::contact')
             ->with('mesaj', __('upepo::email.sent'));
     }
 }

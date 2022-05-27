@@ -4,10 +4,10 @@ namespace Simbamahaba\Upepo\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Simbamahaba\Upepo\Requests\CustomerProfileRequest;
 use Simbamahaba\Upepo\Models\Customer;
 use Simbamahaba\Upepo\Models\Order;
 use Illuminate\Support\Facades\Hash;
+use Simbamahaba\Upepo\Requests\CustomerProfileUpdateRequest;
 
 class CustomerController extends Controller
 {
@@ -41,11 +41,11 @@ class CustomerController extends Controller
     /**
      * Updates customer profile
      *
-     * @param CustomerProfileRequest $request
+     * @param CustomerProfileUpdateRequest $request
      * @param Customer $customer
      * @return \Illuminate\Routing\Redirector
      */
-    public function update(CustomerProfileRequest $request, Customer $customer)
+    public function update(CustomerProfileUpdateRequest $request, Customer $customer)
     {
         $validated = $request->validated();
 

@@ -47,6 +47,10 @@ class UpepoServiceProvider extends ServiceProvider
         ], 'config');
 
         $this->publishes([
+            __DIR__.'/config/regex.php' => config_path('regex.php'),
+        ], 'config_regex');
+
+        $this->publishes([
             __DIR__.'/Middleware' => app_path('Http/Middleware'),
         ], 'middleware');
 

@@ -22,13 +22,6 @@
                 @if ($errors->has('account_type')) <span class="help-block text-danger"><strong>{{ $errors->first('account_type') }}</strong></span> @endif
             </div>
         </div>
-        <div class="item form-group @error('email') bad @enderror">
-            <label for="email" class="col-form-label col-md-3 col-sm-3 label-align">Email * :</label>
-            <div class="col-md-6 col-sm-6">
-                <input type="email" name="email" id="email" class="form-control input-sm" value="{{ $customer->email }}" placeholder="Email">
-                @if ($errors->has('email')) <span class="help-block text-danger"><strong>{{ $errors->first('email') }}</strong></span> @endif
-            </div>
-        </div>
         <div class="item form-group @error('phone') bad @enderror">
             <label for="phone" class="col-form-label col-md-3 col-sm-3 label-align">Telefon * :</label>
             <div class="col-md-6 col-sm-6">

@@ -41,6 +41,15 @@
             <span class="help-block text-danger"><strong>{{ $errors->first('password') }}</strong></span>
             @endif
         </div>
+        <div class="item form-group @error('password_confirmation') bad @enderror">
+            <label for="password_confirmation" class="col-form-label col-md-3 col-sm-3 label-align">Confirma parola * :</label>
+            <div class="col-md-6 col-sm-6">
+                <input type="text" name="password_confirmation" id="password_confirmation" form="store_customer" class="form-control" placeholder="">
+            </div>
+            @if ($errors->has('password_confirmation'))
+                <span class="help-block text-danger"><strong>{{ $errors->first('password_confirmation') }}</strong></span>
+            @endif
+        </div>
         <div class="item form-group @error('phone') bad @enderror">
             <label for="phone" class="col-form-label col-md-3 col-sm-3 label-align">Telefon :</label>
             <div class="col-md-6 col-sm-6">

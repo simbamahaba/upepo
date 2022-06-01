@@ -20,10 +20,10 @@ class CreateOrdereditemsTable extends Migration
             $table->integer('product_id',false,true)->nullable();
             $table->string('name',100);
             $table->decimal('price',10,2);
-            $table->string('sku',50);
+            $table->string('sku',50)->nullable();;
             $table->integer('quantity',false,true);
-            $table->string('size',50);
-            $table->string('color',50);
+            $table->string('size',50)->nullable();;
+            $table->string('color',50)->nullable();;
         });
         if(Schema::hasTable('ordereditems')) {
             Schema::table('ordereditems', function (Blueprint $table) {

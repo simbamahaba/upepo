@@ -21,6 +21,15 @@ class CreateStatusesTable extends Migration
             $table->unsignedInteger('order');
             $table->timestamps();
         });
+
+        if( Schema::hasTable('statuses')){
+            DB::table('statuses')->insert([
+                ['name' => 'Comandă plasată', 'order' => 1],
+                ['name' => 'Comandă procesată', 'order' => 2],
+                ['name' => 'Comandă expediată', 'order' => 3],
+                ['name' => 'Comandă finalizată', 'order' => 4],
+            ]);
+        }
     }
 
     /**

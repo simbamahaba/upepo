@@ -64,7 +64,7 @@ class CustomerController extends Controller
         $customer->save();
 
         return redirect('customer/profile')
-            ->with('mesaj', __('profile.updated'));
+            ->with('mesaj', __('upepo::profile.updated'));
     }
 
 
@@ -97,7 +97,7 @@ class CustomerController extends Controller
         $customer->password = Hash::make($request->password);
         $customer->save();
 
-        return redirect('customer/profile')->with('mesaj', __('passwords.changed'));
+        return redirect('customer/profile')->with('mesaj', __('upepo::passwords.changed'));
     }
 
 }

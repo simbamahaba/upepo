@@ -2,9 +2,9 @@
 $(document).ready(function(){
     $('.add_to_cart').click(function(event){
         event.preventDefault();
-        var product_id = $(this).attr('id');
-        var cant = $("#qty_" + product_id).val();
-        var price = $('#price_' + product_id).html();
+        const product_id = $(this).attr('id');
+        const cant = $("#qty_" + product_id).val();
+        const price = $('#price_' + product_id).html();
         //Ajax setup
         $.ajaxSetup({
             headers: {

@@ -8,9 +8,10 @@
 
 <h3>Cosul de cumparaturi</h3>
     @if(Cart::count() != 0)
-            {!! Form::open(['method'=>'POST','url'=>'cart/update','class'=>'form-horizontal']) !!}
+            <form action="{{ url('cart/update') }}" method="POST">
+                @csrf @method('POST')
 
-        <table class="table">
+        <table class="">
             <thead>
                 <tr>
                     <th colspan="2">Produs</th>
@@ -23,7 +24,7 @@
             <tfoot>
                 <tr>
                     <td colspan="5" class="text-right">TOTAL: </td>
-                    <td>{{ Cart::total() }} RON</td>
+                    <td>{{ Cart::total() }} {{ config('shop.currency') }}</td>
                 </tr>
             </tfoot>
             <tbody>
@@ -47,16 +48,16 @@
                         <input type="number" min="1" name="item[{{ $item->rowId }}]" value="{{ $item->qty }}"><br>
                         <a href="{{ url('cart/deleteItem/'.$item->rowId) }}">Sterge</a>
                     </td>
-                    <td>{{ number_format($item->priceTax,2) }} RON</td>
-                    <td>{{ number_format(round($item->priceTax * $item->qty),2)  }} RON</td>
+                    <td>{{ number_format($item->priceTax,2) }} {{ config('shop.currency') }}</td>
+                    <td>{{ number_format(round($item->priceTax * $item->qty),2)  }} {{ config('shop.currency') }}</td>
                 </tr>
             @endforeach
             </tbody>
         </table>
-        <button type="submit" class="btn btn-default">Modifică</button>
-        <a class="btn btn-default" href="{{ $url }}">Finalizează comanda</a>
-        <a class="btn btn-default" href="{{ url('cart/destroy') }}">Golește coșul</a>
-            {!! Form::close() !!}
+        <button type="submit" class="">Modifică</button>
+        <a class="" href="{{ $url }}">Finalizează comanda</a>
+        <a class="" href="{{ url('cart/destroy') }}">Golește coșul</a>
+            </form>
     @else
         <p>Coșul de cumpărături este gol.</p>
     @endif
